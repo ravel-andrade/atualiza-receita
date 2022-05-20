@@ -1,5 +1,7 @@
 package com.db.atualizareceita.model;
 
+import java.util.Objects;
+
 public class CsvData {
     private String agencia;
     private String conta;
@@ -36,6 +38,19 @@ public class CsvData {
 
     public String getResult() {
         return result;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CsvData csvData = (CsvData) o;
+        return Objects.equals(agencia, csvData.agencia) && Objects.equals(conta, csvData.conta) && Objects.equals(saldo, csvData.saldo) && Objects.equals(status, csvData.status) && Objects.equals(result, csvData.result);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(agencia, conta, saldo, status, result);
     }
 
 }
