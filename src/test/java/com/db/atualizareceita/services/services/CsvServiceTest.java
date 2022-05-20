@@ -1,7 +1,7 @@
-package com.db.atualizareceita.tests.services;
+package com.db.atualizareceita.services.services;
 import com.db.atualizareceita.model.CsvData;
-import com.db.atualizareceita.tests.CsvService;
-import com.db.atualizareceita.tests.ReceitaService;
+import com.db.atualizareceita.services.CsvService;
+import com.db.atualizareceita.services.ReceitaService;
 import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 

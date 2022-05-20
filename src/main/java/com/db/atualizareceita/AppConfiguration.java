@@ -1,9 +1,9 @@
 package com.db.atualizareceita;
 
 import com.db.atualizareceita.controller.IncomeSynchronizationController;
-import com.db.atualizareceita.tests.CsvProcessor;
-import com.db.atualizareceita.tests.CsvService;
-import com.db.atualizareceita.tests.ReceitaService;
+import com.db.atualizareceita.services.processor.CsvProcessor;
+import com.db.atualizareceita.services.CsvService;
+import com.db.atualizareceita.services.ReceitaService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

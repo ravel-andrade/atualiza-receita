@@ -1,8 +1,8 @@
 package com.db.atualizareceita.controller;
 
 import com.db.atualizareceita.model.CsvData;
-import com.db.atualizareceita.tests.CsvProcessor;
-import com.db.atualizareceita.tests.CsvService;
+import com.db.atualizareceita.services.processor.CsvProcessor;
+import com.db.atualizareceita.services.CsvService;
 
 import java.util.List;
 import java.util.Map;
