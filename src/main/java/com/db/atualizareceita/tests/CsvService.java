@@ -1,4 +1,4 @@
-package com.db.atualizareceita.services;
+package com.db.atualizareceita.tests;
 
 import com.db.atualizareceita.model.CsvData;
 import com.opencsv.CSVParser;
@@ -24,7 +24,7 @@ public class CsvService {
             FileReader fileReader = new FileReader(csvPath);
             CSVReader reader = new CSVReader(fileReader);
             BufferedReader buffer = new BufferedReader(fileReader);
-            String[] headers = buffer.readLine().split(",");
+            String[] headers = buffer.readLine().split(";");
             if(!csvHeadersAreValid(headers)){
               throw new InvalidParameterException();
             }
@@ -67,12 +67,14 @@ public class CsvService {
         List<Map<String, String>> accountsData = new ArrayList<>();
         try {
             List<String[]> accountsDataFromFile = fileReader.readAll();
+
             accountsDataFromFile.forEach(dataFromFile ->{
+                String[] accountFromFile = dataFromFile[0].split(";");
                 Map<String, String> accountData = new HashMap<>();
-                accountData.put("agencia", dataFromFile[0]);
-                accountData.put("conta", dataFromFile[1]);
-                accountData.put("saldo", dataFromFile[2]);
-                accountData.put("status", dataFromFile[3]);
+                accountData.put("agencia", accountFromFile[0]);
+                accountData.put("conta", accountFromFile[1]);
+                accountData.put("saldo", accountFromFile[2]);
+                accountData.put("status", accountFromFile[3]);
                 accountsData.add(accountData);
             });
         } catch (IOException | CsvException e) {
