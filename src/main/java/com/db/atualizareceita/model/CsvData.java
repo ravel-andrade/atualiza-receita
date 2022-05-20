@@ -16,6 +16,14 @@ public class CsvData {
         this.status = status;
     }
 
+    public CsvData(String agencia, String conta, Double saldo, String status, String result) {
+        this.agencia = agencia;
+        this.conta = conta;
+        this.saldo = saldo;
+        this.status = status;
+        this.result = result;
+    }
+
     public void setResult(String result) {
         this.result = result;
     }

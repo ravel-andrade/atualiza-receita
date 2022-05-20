@@ -80,6 +80,9 @@ public class CsvService {
         } catch (IOException | CsvException e) {
             System.out.println("-----Error: Cannot read given csv file");
             throw new RuntimeException(e);
+        } catch (ArrayIndexOutOfBoundsException e){
+            System.out.println("-----Error: Cannot read given csv file");
+            throw new RuntimeException(e);
         }
         return accountsData;
     }
