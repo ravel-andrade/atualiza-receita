@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 
@@ -34,8 +35,8 @@ public class CsvProcessorTest {
     @Test
     public void shouldProcessCsvFile(){
         List<CsvData> expectedResult = buildACsvList();
-        List<CsvData> result = csvProcessor.process(VALID_CSV);
-        assertEquals(expectedResult, result);
+        Optional<List<CsvData>> result = csvProcessor.process(VALID_CSV);
+        assertEquals(expectedResult, result.get());
     }
 
     @Test(expected = RuntimeException.class)

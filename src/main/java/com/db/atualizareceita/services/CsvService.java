@@ -8,7 +8,6 @@ import com.opencsv.CSVReaderBuilder;
 import com.opencsv.exceptions.CsvException;
 
 import java.io.*;
-import java.security.InvalidParameterException;
 import java.util.*;
 
 public class CsvService {
@@ -20,19 +19,9 @@ public class CsvService {
     }
 
     public boolean csvFileIsValid(String csvPath) {
-        try {
-            FileReader fileReader = new FileReader(csvPath);
-            CSVReader reader = new CSVReader(fileReader);
-            BufferedReader buffer = new BufferedReader(fileReader);
-            String[] headers = buffer.readLine().split(";");
-            if(!csvHeadersAreValid(headers)){
-              throw new InvalidParameterException();
-            }
-        } catch (IOException error) {
-            System.out.println("-----Error: this file or directory dont exists");
-           return false;
-        }catch (InvalidParameterException error){
-            System.out.println("-----Error: incorrect headers");
+        List<String> errors = findErrorsInCsv(csvPath);
+        if(!errors.isEmpty()){
+            logError(errors);
             return false;
         }
         return true;
@@ -49,44 +38,6 @@ public class CsvService {
         return csvDataList;
     }
 
-    private CsvData buildCsvData(Map<String, String> accountData) {
-        Double income;
-        try {
-            income = Double.parseDouble(accountData.get("saldo"));
-        } catch (Exception e){
-            income = null;
-        }
-
-        return new CsvData(accountData.get("agencia"),
-                           accountData.get("conta").replaceAll("\\D+",""),
-                           income,
-                           accountData.get("status"));
-    }
-
-    private List<Map<String, String>> getAccountsData(CSVReader fileReader) {
-        List<Map<String, String>> accountsData = new ArrayList<>();
-        try {
-            List<String[]> accountsDataFromFile = fileReader.readAll();
-
-            accountsDataFromFile.forEach(dataFromFile ->{
-                String[] accountFromFile = dataFromFile[0].split(";");
-                Map<String, String> accountData = new HashMap<>();
-                accountData.put("agencia", accountFromFile[0]);
-                accountData.put("conta", accountFromFile[1]);
-                accountData.put("saldo", accountFromFile[2]);
-                accountData.put("status", accountFromFile[3]);
-                accountsData.add(accountData);
-            });
-        } catch (IOException | CsvException e) {
-            System.out.println("-----Error: Cannot read given csv file");
-            throw new RuntimeException(e);
-        } catch (ArrayIndexOutOfBoundsException e){
-            System.out.println("-----Error: Cannot read given csv file");
-            throw new RuntimeException(e);
-        }
-        return accountsData;
-    }
-
     public List<CsvData> updateAccountsInfo(List<CsvData> accountsData) {
         for (CsvData accountData : accountsData){
             boolean resultFromUpdate = updateAccount(accountData);
@@ -100,32 +51,22 @@ public class CsvService {
     }
 
     public void saveUpdatedIncomes(List<CsvData> accountsData, String destinePath) {
-        String newFileName;
-        if(destinePath != null){
-            newFileName = destinePath + "updated_accounts.csv";
-        }else{
-            newFileName = "updated_accounts.csv";
-        }
+        String newFileName = getNewFileName(destinePath);
         File newFile = new File(newFileName);
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(newFile))) {
-            buildHeaders(writer);
-            writer.newLine();
-            accountsData.forEach(csv -> {
-                buildCsv(csv, writer);
+        try {
+            BufferedWriter fileWriter = buildFileWriter(newFile);
+            buildHeadersForNewFile(fileWriter);
+            accountsData.forEach(accountData -> {
+                buildCsv(accountData, fileWriter);
             });
         } catch (IOException ex) {
-            ex.printStackTrace();
+            logError("Couldn't save data in a new file");
         }
-        System.out.println("-----Success: Your new file was saved at: "+ newFileName);
+        System.out.println("Success: Your new file was saved at: "+ newFileName);
     }
 
-    private void buildHeaders(BufferedWriter writer) throws IOException {
-        writer.append("agencia").append(";");
-        writer.append("conta").append(";");
-        writer.append("saldo").append(";");
-        writer.append("status").append(";");
-        writer.append("result");
-
+    private BufferedWriter buildFileWriter(File newFile) throws IOException {
+        return new BufferedWriter(new FileWriter(newFile));
     }
 
     public Map<String, String> getCsvDataPath(String[] csvMetadata) {
@@ -140,8 +81,66 @@ public class CsvService {
         return csvDataPath;
     }
 
+    private String[] getHeaders(String csvPath) throws IOException {
+        FileReader fileReader = new FileReader(csvPath);
+        BufferedReader buffer = new BufferedReader(fileReader);
+        return buffer.readLine().split(";");
+    }
+
+    private CsvData buildCsvData(Map<String, String> accountData) {
+        Double income;
+        try {
+            income = Double.parseDouble(accountData.get("saldo"));
+        } catch (Exception e){
+            income = null;
+        }
+
+        return new CsvData(accountData.get("agencia"),
+                accountData.get("conta").replaceAll("\\D+",""),
+                income,
+                accountData.get("status"));
+    }
+
+    private List<Map<String, String>> getAccountsData(CSVReader fileReader) {
+        List<Map<String, String>> accountsData = new ArrayList<>();
+        Optional<List<String[]>> accountsDataFromFile = getAccountsDataFromFile(fileReader);
+        if(accountsDataFromFile.isPresent()){
+            accountsData = buildAccountsData(accountsDataFromFile.get());
+        }
+        return accountsData;
+    }
+
+    private List<Map<String, String>> buildAccountsData(List<String[]> accountsDataFromFile) {
+        List<Map<String, String>> accountsData = new ArrayList<>();
+        accountsDataFromFile.forEach(dataFromFile ->{
+            Map<String, String> accountData = new HashMap<>();
+            accountData.put("agencia", dataFromFile[0]);
+            accountData.put("conta", dataFromFile[1]);
+            accountData.put("saldo", dataFromFile[2]);
+            accountData.put("status", dataFromFile[3]);
+            accountsData.add(accountData);
+        });
+        return accountsData;
+    }
+
+    private String getNewFileName(String destinePath) {
+        if(destinePath != null){
+            return destinePath + "updated_accounts.csv";
+        }
+        return "updated_accounts.csv";
+    }
+
+    private void buildHeadersForNewFile(BufferedWriter writer) throws IOException {
+        writer.append("agencia").append(";");
+        writer.append("conta").append(";");
+        writer.append("saldo").append(";");
+        writer.append("status").append(";");
+        writer.append("result");
+        writer.newLine();
+    }
+
     private CSVReader getFileReader(String csvPath) {
-        CSVParser csvParser = new CSVParserBuilder().withSeparator(',').build();
+        CSVParser csvParser = new CSVParserBuilder().withSeparator(CSV_SEPARATOR).build();
         try {
             return new CSVReaderBuilder(
                     new FileReader(csvPath))
@@ -161,17 +160,16 @@ public class CsvService {
         return false;
     }
 
-    private void buildCsv(CsvData csv, BufferedWriter writer) {
+    private void buildCsv(CsvData accountData, BufferedWriter writer) {
         try {
-            writer.append(csv.getAgencia()).append(CSV_SEPARATOR)
-                    .append(csv.getConta()).append(CSV_SEPARATOR)
-                    .append(csv.getSaldo().toString()).append(CSV_SEPARATOR)
-                    .append(csv.getStatus()).append(CSV_SEPARATOR)
-                    .append(csv.getResult());
+            writer.append(accountData.getAgencia()).append(CSV_SEPARATOR)
+                    .append(accountData.getConta()).append(CSV_SEPARATOR)
+                    .append(accountData.getSaldo().toString()).append(CSV_SEPARATOR)
+                    .append(accountData.getStatus()).append(CSV_SEPARATOR)
+                    .append(accountData.getResult());
             writer.newLine();
         } catch (IOException e) {
-            System.out.println("-----Error: Could not save data in a new csv file");
-            throw new RuntimeException(e);
+            logError("Could not save data for account:"+accountData.getConta()+" in a new csv file");
         }
     }
 
@@ -186,5 +184,37 @@ public class CsvService {
         } catch (InterruptedException e) {
             return false;
         }
+    }
+
+    private void logError(List<String> errors) {
+        errors.forEach(error -> System.out.println("Error: "+error));
+    }
+
+    private void logError(String error) {
+        System.out.println("Error: "+error);
+    }
+
+    private List<String> findErrorsInCsv(String csvPath) {
+        List<String> errors = new ArrayList<>();
+        try {
+            String[] headers = getHeaders(csvPath);
+            if(!csvHeadersAreValid(headers)){
+                errors.add("incorrect headers");
+            }
+        } catch (IOException error) {
+            errors.add("file or directory dont exists");
+        }
+        return errors;
+    }
+
+    private Optional<List<String[]>> getAccountsDataFromFile(CSVReader fileReader) {
+        try {
+            return Optional.of(fileReader.readAll());
+        } catch (IOException e) {
+            logError(e.toString());
+        } catch (CsvException e) {
+            logError(e.toString());
+        }
+        return Optional.empty();
     }
 }

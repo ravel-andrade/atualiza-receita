@@ -6,6 +6,7 @@ import com.db.atualizareceita.services.CsvService;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class IncomeSynchronizationController {
     CsvProcessor csvProcessor;
@@ -19,8 +20,8 @@ public class IncomeSynchronizationController {
     public void updateIncome(String[] csvMetadata) {
         Map<String, String> incomeDataPaths = csvService.getCsvDataPath(csvMetadata);
         if(csvProcessor.accept(incomeDataPaths.get("csvpath"))){
-            List<CsvData> csvData = csvProcessor.process(incomeDataPaths.get("csvpath"));
-            csvService.saveUpdatedIncomes(csvData, incomeDataPaths.get("destineurl"));
+            Optional<List<CsvData>> csvData = csvProcessor.process(incomeDataPaths.get("csvpath"));
+            csvData.ifPresent(data -> csvService.saveUpdatedIncomes(data, incomeDataPaths.get("destineurl")));
         }
 
     }
