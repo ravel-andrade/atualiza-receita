@@ -7,7 +7,7 @@ import com.db.atualizareceita.services.CsvService;
 import java.util.List;
 import java.util.Optional;
 
-public class CsvProcessor{
+public class CsvProcessor implements Processor{
     CsvService csvService;
     AccountService accountService;
 

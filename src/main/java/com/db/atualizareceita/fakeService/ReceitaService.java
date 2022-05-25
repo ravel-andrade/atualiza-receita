@@ -1,4 +1,4 @@
-package com.db.atualizareceita.services;
+package com.db.atualizareceita.fakeService;
 import java.util.ArrayList;
 import java.util.List;
 public class ReceitaService {

@@ -1,5 +1,6 @@
 package com.db.atualizareceita.services;
 
+import com.db.atualizareceita.fakeService.ReceitaService;
 import com.db.atualizareceita.model.Account;
 import com.db.atualizareceita.model.CsvData;
 
@@ -7,10 +8,10 @@ import java.util.List;
 
 public class AccountService {
 
-    private ReceitaService receitaService;
+    private IncomeService incomeService;
 
-    public AccountService(ReceitaService receitaService) {
-        this.receitaService = receitaService;
+    public AccountService(IncomeService incomeService) {
+        this.incomeService = incomeService;
     }
 
     public List<CsvData> updateAccountsInfo(List<CsvData> accountsData) {
@@ -26,7 +27,7 @@ public class AccountService {
     }
     private boolean updateAccount(Account account) {
         try {
-            return receitaService.atualizarConta(
+            return incomeService.updateAccount(
                     account.getAgency(),
                     account.getAccountNumber(),
                     account.getBalance(),

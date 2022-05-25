@@ -5,7 +5,8 @@ import com.db.atualizareceita.model.CsvData;
 import com.db.atualizareceita.processor.CsvProcessor;
 import com.db.atualizareceita.services.AccountService;
 import com.db.atualizareceita.services.CsvService;
-import com.db.atualizareceita.services.ReceitaService;
+import com.db.atualizareceita.fakeService.ReceitaService;
+import com.db.atualizareceita.services.IncomeService;
 import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -18,7 +19,8 @@ import static org.junit.Assert.assertEquals;
 @SpringBootTest
 public class CsvProcessorTest {
     CsvService csvService = new CsvService();
-    AccountService accountService = new AccountService(new ReceitaService());
+    IncomeService incomeService = new IncomeService(new ReceitaService());
+    AccountService accountService = new AccountService(incomeService);
     CsvProcessor csvProcessor = new CsvProcessor(csvService, accountService);
     String VALID_CSV = "src/test/java/resources/validCsv.csv";
     String INVALID_CSV = "src/test/java/resources/invalidCsv.csv";
