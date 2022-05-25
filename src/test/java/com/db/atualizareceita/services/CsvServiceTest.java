@@ -1,7 +1,6 @@
 package com.db.atualizareceita.services;
+import com.db.atualizareceita.model.Account;
 import com.db.atualizareceita.model.CsvData;
-import com.db.atualizareceita.services.CsvService;
-import com.db.atualizareceita.services.ReceitaService;
 import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -12,7 +11,7 @@ import static org.junit.Assert.assertEquals;
 
 @SpringBootTest
 public class CsvServiceTest {
-    CsvService csvService = new CsvService(new ReceitaService());
+    CsvService csvService = new CsvService();
     String VALID_CSV = "src/test/java/resources/validCsv.csv";
     String INVALID_CSV = "src/test/java/resources/invalidCsv.csv";
     @Test
@@ -47,8 +46,8 @@ public class CsvServiceTest {
 
     private List<CsvData> buildACsvList() {
         List<CsvData> expectedResultList = new ArrayList<>();
-        expectedResultList.add(new CsvData("101", "1223", 12.0, "I"));
-        expectedResultList.add(new CsvData("0101", "122256", 100.0, "A"));
+        expectedResultList.add(new CsvData(new Account("101", "1223", 12.0, "I")));
+        expectedResultList.add(new CsvData(new Account("0101", "122256", 100.0, "A")));
         return expectedResultList;
     }
 

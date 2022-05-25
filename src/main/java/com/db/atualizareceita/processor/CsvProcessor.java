@@ -1,6 +1,7 @@
-package com.db.atualizareceita.services.processor;
+package com.db.atualizareceita.processor;
 
 import com.db.atualizareceita.model.CsvData;
+import com.db.atualizareceita.services.AccountService;
 import com.db.atualizareceita.services.CsvService;
 
 import java.util.List;
@@ -8,9 +9,11 @@ import java.util.Optional;
 
 public class CsvProcessor{
     CsvService csvService;
+    AccountService accountService;
 
-    public CsvProcessor(CsvService csvService) {
+    public CsvProcessor(CsvService csvService, AccountService accountService) {
         this.csvService = csvService;
+        this.accountService = accountService;
     }
 
     public boolean accept(String csvPath) {
@@ -30,6 +33,6 @@ public class CsvProcessor{
     }
 
     private List<CsvData> updateAccounts(List<CsvData> csvData){
-        return csvService.updateAccountsInfo(csvData);
+        return accountService.updateAccountsInfo(csvData);
     }
 }

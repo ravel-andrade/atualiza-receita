@@ -1,18 +1,18 @@
-package com.db.atualizareceita.controller;
+package com.db.atualizareceita.runner;
 
 import com.db.atualizareceita.model.CsvData;
-import com.db.atualizareceita.services.processor.CsvProcessor;
+import com.db.atualizareceita.processor.CsvProcessor;
 import com.db.atualizareceita.services.CsvService;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class IncomeSynchronizationController {
+public class IncomeSynchronizationRunner {
     CsvProcessor csvProcessor;
     CsvService csvService;
 
-    public IncomeSynchronizationController(CsvProcessor csvProcessorService, CsvService csvService) {
+    public IncomeSynchronizationRunner(CsvProcessor csvProcessorService, CsvService csvService) {
         this.csvProcessor = csvProcessorService;
         this.csvService = csvService;
     }
@@ -21,7 +21,7 @@ public class IncomeSynchronizationController {
         Map<String, String> incomeDataPaths = csvService.getCsvDataPath(csvMetadata);
         if(csvProcessor.accept(incomeDataPaths.get("csvpath"))){
             Optional<List<CsvData>> csvData = csvProcessor.process(incomeDataPaths.get("csvpath"));
-            csvData.ifPresent(data -> csvService.saveUpdatedIncomes(data, incomeDataPaths.get("destineurl")));
+            csvData.ifPresent(data -> csvService.saveUpdatedIncomesInCsvFile(data, incomeDataPaths.get("destineurl")));
         }
 
     }

@@ -1,7 +1,8 @@
 package com.db.atualizareceita;
 
-import com.db.atualizareceita.controller.IncomeSynchronizationController;
-import com.db.atualizareceita.services.processor.CsvProcessor;
+import com.db.atualizareceita.runner.IncomeSynchronizationRunner;
+import com.db.atualizareceita.processor.CsvProcessor;
+import com.db.atualizareceita.services.AccountService;
 import com.db.atualizareceita.services.CsvService;
 import com.db.atualizareceita.services.ReceitaService;
 import org.springframework.context.annotation.Bean;
@@ -15,15 +16,20 @@ public class AppConfiguration {
     }
 
     @Bean
-    public CsvService csvService(ReceitaService receitaService){
-        return new CsvService(receitaService);
+    public CsvService csvService(){
+        return new CsvService();
     }
     @Bean
-    public CsvProcessor csvProcessor(CsvService csvService){
-        return new CsvProcessor(csvService);
+    public CsvProcessor csvProcessor(CsvService csvService, AccountService accountService){
+        return new CsvProcessor(csvService, accountService);
+    }
+
+    @Bean
+    public AccountService accountService(ReceitaService receitaService){
+        return new AccountService(receitaService);
     }
     @Bean
-    public IncomeSynchronizationController synchronizationController(CsvProcessor csvProcessor, CsvService csvService){
-        return new IncomeSynchronizationController(csvProcessor, csvService);
+    public IncomeSynchronizationRunner synchronizationController(CsvProcessor csvProcessor, CsvService csvService){
+        return new IncomeSynchronizationRunner(csvProcessor, csvService);
     }
 }

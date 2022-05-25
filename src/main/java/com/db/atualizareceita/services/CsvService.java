@@ -1,5 +1,6 @@
 package com.db.atualizareceita.services;
 
+import com.db.atualizareceita.model.Account;
 import com.db.atualizareceita.model.CsvData;
 import com.opencsv.CSVParser;
 import com.opencsv.CSVParserBuilder;
@@ -11,11 +12,9 @@ import java.io.*;
 import java.util.*;
 
 public class CsvService {
-    ReceitaService receitaService;
     char CSV_SEPARATOR = ';';
 
-    public CsvService(ReceitaService receitaService) {
-        this.receitaService = receitaService;
+    public CsvService() {
     }
 
     public boolean csvFileIsValid(String csvPath) {
@@ -38,19 +37,9 @@ public class CsvService {
         return csvDataList;
     }
 
-    public List<CsvData> updateAccountsInfo(List<CsvData> accountsData) {
-        for (CsvData accountData : accountsData){
-            boolean resultFromUpdate = updateAccount(accountData);
-            if(resultFromUpdate){
-                accountData.setResult("atualizado");
-            }else{
-                accountData.setResult("falha na atualizacao");
-            }
-        }
-        return accountsData;
-    }
 
-    public void saveUpdatedIncomes(List<CsvData> accountsData, String destinePath) {
+
+    public void saveUpdatedIncomesInCsvFile(List<CsvData> accountsData, String destinePath) {
         String newFileName = getNewFileName(destinePath);
         File newFile = new File(newFileName);
         try {
@@ -63,10 +52,6 @@ public class CsvService {
             logError("Couldn't save data in a new file");
         }
         System.out.println("Success: Your new file was saved at: "+ newFileName);
-    }
-
-    private BufferedWriter buildFileWriter(File newFile) throws IOException {
-        return new BufferedWriter(new FileWriter(newFile));
     }
 
     public Map<String, String> getCsvDataPath(String[] csvMetadata) {
@@ -87,6 +72,10 @@ public class CsvService {
         return buffer.readLine().split(";");
     }
 
+    private BufferedWriter buildFileWriter(File newFile) throws IOException {
+        return new BufferedWriter(new FileWriter(newFile));
+    }
+
     private CsvData buildCsvData(Map<String, String> accountData) {
         Double income;
         try {
@@ -95,15 +84,17 @@ public class CsvService {
             income = null;
         }
 
-        return new CsvData(accountData.get("agencia"),
+        CsvData result = new CsvData(
+                new Account(accountData.get("agencia"),
                 accountData.get("conta").replaceAll("\\D+",""),
                 income,
-                accountData.get("status"));
+                accountData.get("status")));
+        return result;
     }
 
     private List<Map<String, String>> getAccountsData(CSVReader fileReader) {
         List<Map<String, String>> accountsData = new ArrayList<>();
-        Optional<List<String[]>> accountsDataFromFile = getAccountsDataFromFile(fileReader);
+        Optional<List<String[]>> accountsDataFromFile = getDataFromFile(fileReader);
         if(accountsDataFromFile.isPresent()){
             accountsData = buildAccountsData(accountsDataFromFile.get());
         }
@@ -161,28 +152,16 @@ public class CsvService {
     }
 
     private void buildCsv(CsvData accountData, BufferedWriter writer) {
+        Account account = accountData.getAccount();
         try {
-            writer.append(accountData.getAgencia()).append(CSV_SEPARATOR)
-                    .append(accountData.getConta()).append(CSV_SEPARATOR)
-                    .append(accountData.getSaldo().toString()).append(CSV_SEPARATOR)
-                    .append(accountData.getStatus()).append(CSV_SEPARATOR)
+            writer.append(account.getAgencia()).append(CSV_SEPARATOR)
+                    .append(account.getConta()).append(CSV_SEPARATOR)
+                    .append(account.getSaldo().toString()).append(CSV_SEPARATOR)
+                    .append(account.getStatus()).append(CSV_SEPARATOR)
                     .append(accountData.getResult());
             writer.newLine();
         } catch (IOException e) {
-            logError("Could not save data for account:"+accountData.getConta()+" in a new csv file");
-        }
-    }
-
-    private boolean updateAccount(CsvData accountData) {
-        try {
-            return receitaService.atualizarConta(
-                    accountData.getAgencia(),
-                    accountData.getConta(),
-                    accountData.getSaldo(),
-                    accountData.getStatus()
-            );
-        } catch (InterruptedException e) {
-            return false;
+            logError("Could not save data for account:"+account.getConta()+" in a new csv file");
         }
     }
 
@@ -207,7 +186,7 @@ public class CsvService {
         return errors;
     }
 
-    private Optional<List<String[]>> getAccountsDataFromFile(CSVReader fileReader) {
+    private Optional<List<String[]>> getDataFromFile(CSVReader fileReader) {
         try {
             return Optional.of(fileReader.readAll());
         } catch (IOException e) {

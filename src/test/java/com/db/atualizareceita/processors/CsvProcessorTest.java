@@ -1,7 +1,9 @@
-package com.db.atualizareceita.services.processors;
+package com.db.atualizareceita.processors;
 
+import com.db.atualizareceita.model.Account;
 import com.db.atualizareceita.model.CsvData;
-import com.db.atualizareceita.services.processor.CsvProcessor;
+import com.db.atualizareceita.processor.CsvProcessor;
+import com.db.atualizareceita.services.AccountService;
 import com.db.atualizareceita.services.CsvService;
 import com.db.atualizareceita.services.ReceitaService;
 import org.junit.Test;
@@ -15,8 +17,9 @@ import static org.junit.Assert.assertEquals;
 
 @SpringBootTest
 public class CsvProcessorTest {
-    CsvService csvService = new CsvService(new ReceitaService());
-    CsvProcessor csvProcessor = new CsvProcessor(csvService);
+    CsvService csvService = new CsvService();
+    AccountService accountService = new AccountService(new ReceitaService());
+    CsvProcessor csvProcessor = new CsvProcessor(csvService, accountService);
     String VALID_CSV = "src/test/java/resources/validCsv.csv";
     String INVALID_CSV = "src/test/java/resources/invalidCsv.csv";
 
@@ -46,8 +49,8 @@ public class CsvProcessorTest {
 
     private List<CsvData> buildACsvList() {
         List<CsvData> expectedResultList = new ArrayList<>();
-        expectedResultList.add(new CsvData("101", "1223", 12.0, "I", "falha na atualizacao"));
-        expectedResultList.add(new CsvData("0101", "122256", 100.0, "A", "atualizado"));
+        expectedResultList.add(new CsvData(new Account("101", "1223", 12.0, "I"), "falha na atualizacao"));
+        expectedResultList.add(new CsvData(new Account("0101", "122256", 100.0, "A"), "atualizado"));
         return expectedResultList;
     }
 }
