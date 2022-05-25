@@ -27,9 +27,9 @@ public class AccountService {
     private boolean updateAccount(Account account) {
         try {
             return receitaService.atualizarConta(
-                    account.getAgencia(),
-                    account.getConta(),
-                    account.getSaldo(),
+                    account.getAgency(),
+                    account.getAccountNumber(),
+                    account.getBalance(),
                     account.getStatus()
             );
         } catch (InterruptedException e) {

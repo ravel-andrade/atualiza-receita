@@ -154,14 +154,14 @@ public class CsvService {
     private void buildCsv(CsvData accountData, BufferedWriter writer) {
         Account account = accountData.getAccount();
         try {
-            writer.append(account.getAgencia()).append(CSV_SEPARATOR)
-                    .append(account.getConta()).append(CSV_SEPARATOR)
-                    .append(account.getSaldo().toString()).append(CSV_SEPARATOR)
+            writer.append(account.getAgency()).append(CSV_SEPARATOR)
+                    .append(account.getAccountNumber()).append(CSV_SEPARATOR)
+                    .append(account.getBalance().toString()).append(CSV_SEPARATOR)
                     .append(account.getStatus()).append(CSV_SEPARATOR)
                     .append(accountData.getResult());
             writer.newLine();
         } catch (IOException e) {
-            logError("Could not save data for account:"+account.getConta()+" in a new csv file");
+            logError("Could not save data for account:"+account.getAccountNumber()+" in a new csv file");
         }
     }
 
