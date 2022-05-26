@@ -29,7 +29,7 @@ public class CsvService {
     public List<CsvData> extractDataFromCsv(String csvPath) {
         List<CsvData> csvDataList = new ArrayList<>();
             CSVReader fileReader = getFileReader(csvPath);
-            List<Map<String, String>> accountsData = getAccountsData(fileReader);
+            List<Map<String, String>> accountsData = getAccountsDataFromCsv(fileReader);
             accountsData.forEach(accountData ->{
                 csvDataList.add(buildCsvData(accountData));
             });
@@ -92,7 +92,7 @@ public class CsvService {
         return result;
     }
 
-    private List<Map<String, String>> getAccountsData(CSVReader fileReader) {
+    private List<Map<String, String>> getAccountsDataFromCsv(CSVReader fileReader) {
         List<Map<String, String>> accountsData = new ArrayList<>();
         Optional<List<String[]>> accountsDataFromFile = getDataFromFile(fileReader);
         if(accountsDataFromFile.isPresent()){

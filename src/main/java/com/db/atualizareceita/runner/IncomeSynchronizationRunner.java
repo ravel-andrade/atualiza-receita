@@ -20,10 +20,13 @@ public class IncomeSynchronizationRunner {
 
     public void updateIncome(String[] csvMetadata) {
         Map<String, String> incomeDataPaths = csvService.getCsvDataPath(csvMetadata);
-        if(processor.accept(incomeDataPaths.get("csvpath"))){
-            Optional<List<CsvData>> csvData = processor.process(incomeDataPaths.get("csvpath"));
-            csvData.ifPresent(data -> csvService.saveUpdatedIncomesInCsvFile(data, incomeDataPaths.get("destineurl")));
+        if(!incomeDataPaths.isEmpty()){
+            if(processor.accept(incomeDataPaths.get("csvpath"))){
+                Optional<List<CsvData>> csvData = processor.process(incomeDataPaths.get("csvpath"));
+                csvData.ifPresent(data -> csvService.saveUpdatedIncomesInCsvFile(data, incomeDataPaths.get("destineurl")));
+            }
+        }{
+         System.out.println("Error: Missing csv path");
         }
-
     }
 }
