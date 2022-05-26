@@ -42,12 +42,11 @@ public class CsvService {
     public void saveUpdatedIncomesInCsvFile(List<CsvData> accountsData, String destinePath) {
         String newFileName = getNewFileName(destinePath);
         File newFile = new File(newFileName);
-        try {
-            BufferedWriter fileWriter = buildFileWriter(newFile);
-            buildHeadersForNewFile(fileWriter);
-            accountsData.forEach(accountData -> {
-                buildCsv(accountData, fileWriter);
-            });
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(newFile))) {
+            buildHeadersForNewFile(writer);
+            writer.newLine();
+            accountsData.forEach(csv -> {
+                buildCsv(csv, writer);});
         } catch (IOException ex) {
             logError("Couldn't save data in a new file");
         }
@@ -70,10 +69,6 @@ public class CsvService {
         FileReader fileReader = new FileReader(csvPath);
         BufferedReader buffer = new BufferedReader(fileReader);
         return buffer.readLine().split(";");
-    }
-
-    private BufferedWriter buildFileWriter(File newFile) throws IOException {
-        return new BufferedWriter(new FileWriter(newFile));
     }
 
     private CsvData buildCsvData(Map<String, String> accountData) {
@@ -127,7 +122,6 @@ public class CsvService {
         writer.append("saldo").append(";");
         writer.append("status").append(";");
         writer.append("result");
-        writer.newLine();
     }
 
     private CSVReader getFileReader(String csvPath) {

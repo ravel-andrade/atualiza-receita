@@ -25,7 +25,7 @@ public class IncomeSynchronizationRunner {
                 Optional<List<CsvData>> csvData = processor.process(incomeDataPaths.get("csvpath"));
                 csvData.ifPresent(data -> csvService.saveUpdatedIncomesInCsvFile(data, incomeDataPaths.get("destineurl")));
             }
-        }{
+        }else{
          System.out.println("Error: Missing csv path");
         }
     }
