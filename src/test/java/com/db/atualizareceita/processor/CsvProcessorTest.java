@@ -1,8 +1,7 @@
-package com.db.atualizareceita.processors;
+package com.db.atualizareceita.processor;
 
 import com.db.atualizareceita.model.Account;
 import com.db.atualizareceita.model.CsvData;
-import com.db.atualizareceita.processor.CsvProcessor;
 import com.db.atualizareceita.services.AccountService;
 import com.db.atualizareceita.services.CsvService;
 import com.db.atualizareceita.fakeService.ReceitaService;
