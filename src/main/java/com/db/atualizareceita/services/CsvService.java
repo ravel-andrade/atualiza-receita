@@ -39,7 +39,7 @@ public class CsvService {
 
 
 
-    public void saveUpdatedIncomesInCsvFile(List<CsvData> accountsData, String destinePath) {
+    public boolean saveUpdatedIncomesInCsvFile(List<CsvData> accountsData, String destinePath) {
         String newFileName = getNewFileName(destinePath);
         File newFile = new File(newFileName);
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(newFile))) {
@@ -49,8 +49,10 @@ public class CsvService {
                 buildCsv(csv, writer);});
         } catch (IOException ex) {
             logError("Couldn't save data in a new file");
+            return false;
         }
         System.out.println("Success: Your new file was saved at: "+ newFileName);
+        return true;
     }
 
     public Map<String, String> getCsvDataPath(String[] csvMetadata) {

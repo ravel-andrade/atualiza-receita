@@ -32,31 +32,15 @@ public class Account {
         return agency;
     }
 
-    public void setAgency(String agency) {
-        this.agency = agency;
-    }
-
     public String getAccountNumber() {
         return accountNumber;
-    }
-
-    public void setAccountNumber(String accountNumber) {
-        this.accountNumber = accountNumber;
     }
 
     public Double getBalance() {
         return balance;
     }
 
-    public void setBalance(Double balance) {
-        this.balance = balance;
-    }
-
     public String getStatus() {
         return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 }

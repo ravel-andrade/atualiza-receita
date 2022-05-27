@@ -5,7 +5,9 @@ import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
@@ -42,6 +44,31 @@ public class CsvServiceTest {
     @Test(expected = RuntimeException.class)
     public void shouldNotExtractDataFromInvalidCsv(){
         csvService.extractDataFromCsv(INVALID_CSV);
+    }
+
+    @Test
+    public void shouldSaveUpdatedIncomesInCsvFile(){
+        Boolean result = csvService.saveUpdatedIncomesInCsvFile(buildACsvList(), null);
+        assertEquals(true, result);
+    }
+
+    @Test
+    public void shouldNotSaveUpdatedIncomesInCsvFile(){
+        Boolean result = csvService.saveUpdatedIncomesInCsvFile(buildACsvList(), "invalid/destine/path");
+        assertEquals(false, result);
+    }
+
+    @Test
+    public void getCsvDataPathWithCsvPathOnly(){
+        Map<String, String> result = csvService.getCsvDataPath(new String[]{"csv.csv"});
+        assertEquals("csv.csv", result.get("csvpath"));
+    }
+
+    @Test
+    public void getCsvDataPathWithCsvPathAndDestineUrl(){
+        Map<String, String> result = csvService.getCsvDataPath(new String[]{"csv.csv", "path/path"});
+        assertEquals("csv.csv", result.get("csvpath"));
+        assertEquals("path/path", result.get("destineurl"));
     }
 
     private List<CsvData> buildACsvList() {

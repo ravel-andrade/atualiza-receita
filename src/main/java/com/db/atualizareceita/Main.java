@@ -9,7 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class Main implements CommandLineRunner {
 	@Autowired
-    IncomeSynchronizationRunner incomeSynchronizationController;
+    IncomeSynchronizationRunner incomeSynchronizationRunner;
 
 	public static void main(String[] args) {
 		SpringApplication.run(Main.class, args);
@@ -17,6 +17,6 @@ public class Main implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		incomeSynchronizationController.updateIncome(args);
+		incomeSynchronizationRunner.updateIncome(args);
 	}
 }
