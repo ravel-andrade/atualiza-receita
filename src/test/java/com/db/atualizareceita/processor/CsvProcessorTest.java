@@ -2,10 +2,11 @@ package com.db.atualizareceita.processor;
 
 import com.db.atualizareceita.model.Account;
 import com.db.atualizareceita.model.CsvData;
-import com.db.atualizareceita.services.AccountService;
-import com.db.atualizareceita.services.CsvService;
+import com.db.atualizareceita.service.AccountService;
 import com.db.atualizareceita.fakeService.ReceitaService;
-import com.db.atualizareceita.services.IncomeService;
+import com.db.atualizareceita.fileMenager.FileMenager;
+import com.db.atualizareceita.service.IncomeClient;
+import com.db.atualizareceita.validator.Validator;
 import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -17,10 +18,13 @@ import static org.junit.Assert.assertEquals;
 
 @SpringBootTest
 public class CsvProcessorTest {
-    CsvService csvService = new CsvService();
-    IncomeService incomeService = new IncomeService(new ReceitaService());
-    AccountService accountService = new AccountService(incomeService);
-    CsvProcessor csvProcessor = new CsvProcessor(csvService, accountService);
+    IncomeClient incomeClient = new IncomeClient(new ReceitaService());
+
+    FileMenager fileMenager = new FileMenager();
+
+    Validator csvValidator = new Validator(fileMenager);
+    AccountService accountService = new AccountService(incomeClient);
+    CsvProcessor csvProcessor = new CsvProcessor(csvValidator, accountService, fileMenager);
     String VALID_CSV = "src/test/java/resources/validCsv.csv";
     String INVALID_CSV = "src/test/java/resources/invalidCsv.csv";
 
@@ -50,8 +54,8 @@ public class CsvProcessorTest {
 
     private List<CsvData> buildACsvList() {
         List<CsvData> expectedResultList = new ArrayList<>();
-        expectedResultList.add(new CsvData(new Account("101", "1223", 12.0, "I"), "falha na atualizacao"));
-        expectedResultList.add(new CsvData(new Account("0101", "122256", 100.0, "A"), "atualizado"));
+        expectedResultList.add(new CsvData(new Account("101", "1223", "12.0", "I"), "falha na atualizacao"));
+        expectedResultList.add(new CsvData(new Account("0101", "122256", "100.0", "A"), "atualizado"));
         return expectedResultList;
     }
 }

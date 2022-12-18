@@ -1,4 +1,4 @@
-package com.db.atualizareceita.services;
+package com.db.atualizareceita.service;
 import com.db.atualizareceita.fakeService.ReceitaService;
 import com.db.atualizareceita.model.Account;
 import com.db.atualizareceita.model.CsvData;
@@ -12,7 +12,7 @@ import static org.junit.Assert.assertEquals;
 
 @SpringBootTest
 public class AccountServiceTest {
-    AccountService accountService = new AccountService(new IncomeService(new ReceitaService()));
+    AccountService accountService = new AccountService(new IncomeClient(new ReceitaService()));
     String VALID_CSV = "src/test/java/resources/validCsv.csv";
     String INVALID_CSV = "src/test/java/resources/invalidCsv.csv";
     @Test
@@ -24,15 +24,15 @@ public class AccountServiceTest {
 
     private List<CsvData> buildACsvList() {
         List<CsvData> expectedResultList = new ArrayList<>();
-        expectedResultList.add(new CsvData(new Account("101", "1223", 12.0, "I")));
-        expectedResultList.add(new CsvData(new Account("0101", "122256", 100.0, "A")));
+        expectedResultList.add(new CsvData(new Account("101", "1223", "12.0", "I")));
+        expectedResultList.add(new CsvData(new Account("0101", "122256", "100.0", "A")));
         return expectedResultList;
     }
 
     private List<CsvData> buildExpectedACsvList() {
         List<CsvData> expectedResultList = new ArrayList<>();
-        expectedResultList.add(new CsvData(new Account("101", "1223", 12.0, "I"), "falha na atualizacao"));
-        expectedResultList.add(new CsvData(new Account("0101", "122256", 100.0, "A"), "atualizado"));
+        expectedResultList.add(new CsvData(new Account("101", "1223", "12.0", "I"), "falha na atualizacao"));
+        expectedResultList.add(new CsvData(new Account("0101", "122256", "100.0", "A"), "atualizado"));
         return expectedResultList;
     }
 

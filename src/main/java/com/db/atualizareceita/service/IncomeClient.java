@@ -1,11 +1,13 @@
-package com.db.atualizareceita.services;
+package com.db.atualizareceita.service;
 
 import com.db.atualizareceita.fakeService.ReceitaService;
+import org.springframework.stereotype.Component;
 
-public class IncomeService implements IncomeServiceInterface {
+@Component
+public class IncomeClient implements Receita {
     ReceitaService receitaService;
 
-    public IncomeService(ReceitaService receitaService) {
+    public IncomeClient(ReceitaService receitaService) {
         this.receitaService = receitaService;
     }
 

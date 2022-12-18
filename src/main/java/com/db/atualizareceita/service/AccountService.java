@@ -1,17 +1,18 @@
-package com.db.atualizareceita.services;
+package com.db.atualizareceita.service;
 
-import com.db.atualizareceita.fakeService.ReceitaService;
 import com.db.atualizareceita.model.Account;
 import com.db.atualizareceita.model.CsvData;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class AccountService {
 
-    private IncomeService incomeService;
+    private final Receita incomeClient;
 
-    public AccountService(IncomeService incomeService) {
-        this.incomeService = incomeService;
+    public AccountService(Receita incomeClient) {
+        this.incomeClient = incomeClient;
     }
 
     public List<CsvData> updateAccountsInfo(List<CsvData> accountsData) {
@@ -27,7 +28,7 @@ public class AccountService {
     }
     private boolean updateAccount(Account account) {
         try {
-            return incomeService.updateAccount(
+            return incomeClient.updateAccount(
                     account.getAgency(),
                     account.getAccountNumber(),
                     account.getBalance(),

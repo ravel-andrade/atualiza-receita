@@ -1,6 +1,9 @@
 package com.db.atualizareceita.fakeService;
+import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
 import java.util.List;
+@Service
 public class ReceitaService {
     public boolean atualizarConta(String agencia, String conta, double saldo, String status)
             throws RuntimeException, InterruptedException {

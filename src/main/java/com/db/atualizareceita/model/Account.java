@@ -1,5 +1,6 @@
 package com.db.atualizareceita.model;
 
+import java.util.Map;
 import java.util.Objects;
 
 public class Account {
@@ -8,11 +9,23 @@ public class Account {
     private Double balance;
     private String status;
 
-    public Account(String agency, String accountNumber, Double balance, String status) {
+    public Account(String agency, String accountNumber, String balance, String status) {
+        try {
+            this.balance = Double.parseDouble(balance);
+        } catch (Exception e){
+            this.balance = null;
+        }
+        this.accountNumber = accountNumber.replaceAll("\\D+","");
         this.agency = agency;
-        this.accountNumber = accountNumber;
-        this.balance = balance;
         this.status = status;
+    }
+
+    public static Account buildAccount(Map<String, String> accountData){
+        return new Account(
+                accountData.get("agencia"),
+                accountData.get("conta"),
+                accountData.get("saldo"),
+                accountData.get("status"));
     }
 
     @Override
