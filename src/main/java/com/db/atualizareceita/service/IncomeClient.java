@@ -13,6 +13,10 @@ public class IncomeClient implements Receita {
 
     @Override
     public boolean updateAccount(String agency, String account, double balance, String status) throws InterruptedException {
-        return receitaService.atualizarConta(agency, account, balance, status);
+        try{
+            return receitaService.atualizarConta(agency, account, balance, status);
+        }catch (RuntimeException e){
+            return updateAccount(agency, account, balance, status);
+        }
     }
 }
