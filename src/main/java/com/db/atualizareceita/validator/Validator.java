@@ -9,35 +9,16 @@ import java.util.List;
 import static com.db.atualizareceita.Logger.logError;
 
 public class Validator implements DataValidator{
-
-    Menager fileManager;
-
-    public Validator(Menager fileManager) {
-        this.fileManager = fileManager;
+    public Validator() {
     }
 
     @Override
-    public boolean csvFileIsValid(String csvPath) {
-        List<String> errors = findErrorsInCsv(csvPath);
-        if(!errors.isEmpty()){
-            logError(errors);
+    public boolean csvFileIsValid(String[] headers) {
+        if(!csvHeadersAreValid(headers)){
+            logError("incorrect headers");
             return false;
         }
         return true;
-    }
-
-    @Override
-    public List<String> findErrorsInCsv(String csvPath) {
-        List<String> errors = new ArrayList<>();
-        try {
-            String[] headers = fileManager.getHeaders(csvPath);
-            if(!csvHeadersAreValid(headers)){
-                errors.add("incorrect headers");
-            }
-        } catch (IOException error) {
-            errors.add("file or directory dont exists");
-        }
-        return errors;
     }
 
     @Override

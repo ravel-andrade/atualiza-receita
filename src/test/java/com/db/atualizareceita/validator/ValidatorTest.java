@@ -7,28 +7,26 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 public class ValidatorTest {
-
-    String VALID_CSV = "src/test/java/resources/validCsv.csv";
-    String INVALID_CSV = "src/test/java/resources/invalidCsv.csv";
-
-    FileMenager menager = new FileMenager();
-    Validator csvValidator = new Validator(menager);
+    Validator csvValidator = new Validator();
 
     @Test
-    public void shouldReturnTrueWhenValidateCsv(){
-        boolean result = csvValidator.csvFileIsValid(VALID_CSV);
+    public void shouldReturnTrueWhenValidateCsv() {
+        boolean result = csvValidator.csvFileIsValid(getValidHeaders());
         assertEquals(true, result);
     }
 
     @Test
-    public void validateCsvShouldReturnFalseWhenHeadersAreInvalid(){
-        boolean result = csvValidator.csvFileIsValid(INVALID_CSV);
+    public void validateCsvShouldReturnFalseWhenHeadersAreInvalid() {
+        boolean result = csvValidator.csvFileIsValid(getInvalidHeaders());
         assertEquals(false, result);
     }
 
-    @Test
-    public void validateCsvShouldReturnFalseWhenFileDoesntExist(){
-        boolean result = csvValidator.csvFileIsValid("fake.csv");
-        assertEquals(false, result);
+
+    private String[] getValidHeaders() {
+        return new String[]{"agencia", "conta", "saldo", "status"};
+    }
+
+    private String[] getInvalidHeaders() {
+        return new String[]{"agencia", "conta", "saldos", "status"};
     }
 }

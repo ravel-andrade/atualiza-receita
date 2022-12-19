@@ -6,6 +6,7 @@ import com.db.atualizareceita.fileMenager.Menager;
 import com.db.atualizareceita.validator.Validator;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.util.*;
 
 import static com.db.atualizareceita.Logger.logError;
@@ -26,7 +27,13 @@ public class CsvProcessor implements Processor{
     }
 
     public boolean accept(String csvPath) {
-        return csvValidator.csvFileIsValid(csvPath);
+        try{
+            String[] headers = fileMenager.getHeaders(csvPath);
+            return csvValidator.csvFileIsValid(headers);
+        } catch (IOException e) {
+            logError("file or directory don't exists");
+            return false;
+        }
     }
 
     public Optional<List<CsvData>> process(String csvPath) {
