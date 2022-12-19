@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 @SpringBootTest
 public class CsvProcessorTest {
@@ -22,7 +23,7 @@ public class CsvProcessorTest {
 
     FileMenager fileMenager = new FileMenager();
 
-    Validator csvValidator = new Validator(fileMenager);
+    Validator csvValidator = new Validator();
     AccountService accountService = new AccountService(incomeClient);
     CsvProcessor csvProcessor = new CsvProcessor(csvValidator, accountService, fileMenager);
     String VALID_CSV = "src/test/java/resources/validCsv.csv";
@@ -50,6 +51,12 @@ public class CsvProcessorTest {
     @Test(expected = RuntimeException.class)
     public void shouldNotProcessCsvFile(){
         csvProcessor.process(INVALID_CSV);
+    }
+
+    @Test
+    public void validateCsvShouldReturnFalseWhenFileDoesntExist(){
+        boolean result = csvProcessor.accept(INVALID_CSV);
+        assertFalse(result);
     }
 
     private List<CsvData> buildACsvList() {
