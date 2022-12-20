@@ -1,5 +1,6 @@
 package com.db.atualizareceita.service;
 
+import com.db.atualizareceita.Logger;
 import com.db.atualizareceita.fakeService.ReceitaService;
 import org.springframework.stereotype.Component;
 
@@ -16,7 +17,8 @@ public class IncomeClient implements Receita {
         try{
             return receitaService.atualizarConta(agency, account, balance, status);
         }catch (RuntimeException e){
-            return updateAccount(agency, account, balance, status);
+            Logger.logError("Server error when processing accout: "+ account);
+            return false;
         }
     }
 }

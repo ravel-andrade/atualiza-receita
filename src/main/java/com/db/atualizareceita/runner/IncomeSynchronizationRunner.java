@@ -22,7 +22,7 @@ public class IncomeSynchronizationRunner {
 
     public void updateIncome(String[] csvMetadata) {
         Map<String, String> incomeDataPaths = menager.getCsvDataPath(csvMetadata);
-        if(!incomeDataPaths.isEmpty()){
+        if(!incomeDataPaths.isEmpty() && incomeDataPaths.get("csvpath") != null){
             if(processor.accept(incomeDataPaths.get("csvpath"))){
                 Optional<List<CsvData>> csvData = processor.process(incomeDataPaths.get("csvpath"));
                 csvData.ifPresent(data -> menager.saveUpdatedIncomesInCsvFile(data, incomeDataPaths.get("destineurl")));

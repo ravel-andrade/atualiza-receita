@@ -47,6 +47,16 @@ public class IncomeSynchronizationRunnerTest {
     }
 
     @Test
+    public void shouldNotUpdateIncomeWhenFileIsNotCsv(){
+        String[] metadata = {"file", "directory"};
+        incomeSynchronizationRunner.updateIncome(metadata);
+
+        verify(menager, times(1)).getCsvDataPath(metadata);
+        verify(csvProcessor, times(0)).accept(any());
+        verify(csvProcessor, times(0)).process(any());
+    }
+
+    @Test
     public void shouldNotUpdateIncomeWhenCsvIsInvalid(){
         String[] metadata = {INVALID_CSV};
         Map<String, String> metadataMap = new HashMap<>();

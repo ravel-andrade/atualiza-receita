@@ -29,7 +29,7 @@ public class CsvProcessor implements Processor{
     public boolean accept(String csvPath) {
         try{
             String[] headers = fileMenager.getHeaders(csvPath);
-            return csvValidator.csvFileIsValid(headers);
+            return csvValidator.csvHeadersAreValid(headers);
         } catch (IOException e) {
             logError("file or directory don't exists");
             return false;

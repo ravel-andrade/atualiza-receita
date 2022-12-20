@@ -11,13 +11,13 @@ public class ValidatorTest {
 
     @Test
     public void shouldReturnTrueWhenValidateCsv() {
-        boolean result = csvValidator.csvFileIsValid(getValidHeaders());
+        boolean result = csvValidator.csvHeadersAreValid(getValidHeaders());
         assertEquals(true, result);
     }
 
     @Test
     public void validateCsvShouldReturnFalseWhenHeadersAreInvalid() {
-        boolean result = csvValidator.csvFileIsValid(getInvalidHeaders());
+        boolean result = csvValidator.csvHeadersAreValid(getInvalidHeaders());
         assertEquals(false, result);
     }
 
