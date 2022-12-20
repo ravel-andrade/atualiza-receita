@@ -22,7 +22,7 @@ public class IncomeSynchronizationRunner {
 
     public void updateIncome(String[] csvMetadata) {
         Map<String, String> incomeDataPaths = menager.getCsvDataPath(csvMetadata);
-        if(!incomeDataPaths.isEmpty() && incomeDataPaths.get("csvpath") != null){
+        if(dataPathsAreValid(incomeDataPaths)){
             if(processor.accept(incomeDataPaths.get("csvpath"))){
                 Optional<List<CsvData>> csvData = processor.process(incomeDataPaths.get("csvpath"));
                 csvData.ifPresent(data -> menager.saveUpdatedIncomesInCsvFile(data, incomeDataPaths.get("destineurl")));
@@ -30,5 +30,9 @@ public class IncomeSynchronizationRunner {
         }else{
          System.out.println("Error: Missing csv path");
         }
+    }
+
+    private boolean dataPathsAreValid(Map<String, String> incomeDataPaths){
+        return !incomeDataPaths.isEmpty() && incomeDataPaths.get("csvpath") != null;
     }
 }
